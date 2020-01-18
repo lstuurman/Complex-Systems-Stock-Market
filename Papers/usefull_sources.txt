@@ -1,0 +1,4 @@
+Github resources : 
+Twittersraper: Easy to use API to collect data from twitter. Downside : No docs 
+https://github.com/taspinar/twitterscraper/tree/master/twitterscraper
+
