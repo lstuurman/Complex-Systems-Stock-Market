@@ -21,7 +21,7 @@ class DBbuilder():
             self.folder_list = []
             self.limit = 10000
             self.resume_querry = 0
-            self.resume_date = 0
+            self.resume_date = 195
         
     def create_folders(self):
         # create folder of every keyword of different querries
@@ -46,7 +46,6 @@ class DBbuilder():
         
     def scrape(self):
         dates = list(zip(self.date_range[:-1],self.date_range[1:]))
-        #dates = list(zip(self.dt_list[:-1],self.dt_list[1:]))
         querries = list(map(lambda x: x + self.help_querry,self.keywords))
         for i,querry in enumerate(querries[self.resume_querry:],start=self.resume_querry):
             for j,date in enumerate(dates[self.resume_date:],start=self.resume_date):
@@ -62,7 +61,11 @@ class DBbuilder():
                     file.write(str(n) + ' ' + tweet.timestamp.strftime('%Y-%m-%d %H:%M:%S ') + tweet.text + '\n')
                 file.close()
                 # also save as pkl : 
-                #pkl.dump(tweets,open(fname[:-3]+'.pkl','wb'))
+                # pkl.dump(tweets,open(fname[:-3]+'.pkl','wb'))
+            self.resume_date = 0
+            if j % 20 == 0:
+                self.save_class()
+        self.resume_querry = 0
     
     def save_class(self):
         f = open('twitter_builder.pkl','wb')
@@ -75,7 +78,9 @@ class DBbuilder():
 
 if __name__ == "__main__":
     builder = DBbuilder()
-    builder.create_folders()
+    #builder.save_class()
+    #builder.create_folders()
+    builder.scrape()
 
     # def save(self):
     #     """save class as self.name.txt"""
