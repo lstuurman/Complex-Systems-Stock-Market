@@ -10,6 +10,8 @@ class DBbuilder():
 
         try: 
             self.load_class()
+            print(self.resume_date)
+            print(self.resume_querry)
         except:
             self.keywords = ['stocks','oil','forex','gold','commodities','crypto','CFD']
             self.help_querry = ' -filter:links' # min_replies:10 trading min_faves:10 
@@ -20,8 +22,8 @@ class DBbuilder():
             self.home_folder = '/home/lau/GIT/Complex Systems Stock Market/twitter_data' 
             self.folder_list = []
             self.limit = 10000
-            self.resume_querry = 0
-            self.resume_date = 195
+            self.resume_querry = 1
+            self.resume_date = 103
         
     def create_folders(self):
         # create folder of every keyword of different querries
@@ -62,9 +64,8 @@ class DBbuilder():
                 file.close()
                 # also save as pkl : 
                 # pkl.dump(tweets,open(fname[:-3]+'.pkl','wb'))
-            self.resume_date = 0
-            if j % 20 == 0:
                 self.save_class()
+            self.resume_date = 0
         self.resume_querry = 0
     
     def save_class(self):
