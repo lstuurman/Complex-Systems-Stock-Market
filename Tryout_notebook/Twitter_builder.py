@@ -23,7 +23,7 @@ class DBbuilder():
             self.folder_list = []
             self.limit = 10000
             self.resume_querry = 1
-            self.resume_date = 103
+            self.resume_date = 176
         
     def create_folders(self):
         # create folder of every keyword of different querries
