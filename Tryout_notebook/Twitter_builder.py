@@ -70,7 +70,7 @@ class DBbuilder():
     
     def save_class(self):
         f = open('twitter_builder.pkl','wb')
-        pkl.dump(self.__dict__(), f)
+        pkl.dump(self.__dict__, f)
         print(self.__dict__)
 
     def load_class(self):
