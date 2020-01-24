@@ -3,9 +3,14 @@
 import wget
 import pandas as pd
 import pickle
+import os
 
 def get_tickers():
-    ## TODO : DELET OLD TICKERS
+    ## TODO : DELETE OLD TICKERS
+    try:
+        os.remove('/home/lau/GIT/Complex Systems Stock Market/stock_data/tickers.csv')
+    except:
+        print('No file present yet')
     url = "https://dumbstockapi.com/stock?format=csv&exchanges=NASDAQ"
     filename = '/home/lau/GIT/Complex Systems Stock Market/stock_data/tickers.csv'
     wget.download(url, filename)
