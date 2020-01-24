@@ -22,8 +22,8 @@ class DBbuilder():
             self.home_folder = '/home/lau/GIT/Complex Systems Stock Market/twitter_data' 
             self.folder_list = []
             self.limit = 10000
-            self.resume_querry = 1
-            self.resume_date = 221
+            self.resume_querry = 2
+            self.resume_date = 218
         
     def create_folders(self):
         # create folder of every keyword of different querries
@@ -50,13 +50,12 @@ class DBbuilder():
         dates = list(zip(self.date_range[:-1],self.date_range[1:]))
         querries = list(map(lambda x: x + self.help_querry,self.keywords))
         for i,querry in enumerate(querries[self.resume_querry:],start=self.resume_querry):
+            self.resume_querry = i
             for j,date in enumerate(dates[self.resume_date:],start=self.resume_date):
                 #date_querry = ' since:' + date[0] + ' untill:' + date[1]
                 tweets = query_tweets(querry,limit = self.limit, begindate = date[0].date(),
                                      enddate = date[1].date(), lang = 'english')
-                
-                print(i,j)
-                print(len(self.dt_list))
+                self.resume_date = j
                 fname = self.home_folder+'/'+self.keywords[i]+'/'+self.dt_list[j]+'.txt'
                 file = open(fname,'w')
                 for n,tweet in enumerate(tweets):
@@ -66,7 +65,6 @@ class DBbuilder():
                 # pkl.dump(tweets,open(fname[:-3]+'.pkl','wb'))
                 self.save_class()
             self.resume_date = 0
-        self.resume_querry = 0
     
     def save_class(self):
         f = open('twitter_builder.pkl','wb')
