@@ -22,8 +22,8 @@ class DBbuilder():
             self.home_folder = '/home/lau/GIT/Complex Systems Stock Market/twitter_data' 
             self.folder_list = []
             self.limit = 10000
-            self.resume_querry = 2
-            self.resume_date = 218
+            self.resume_querry = 3
+            self.resume_date = 193
         
     def create_folders(self):
         # create folder of every keyword of different querries

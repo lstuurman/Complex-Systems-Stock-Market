@@ -1,8 +1,9 @@
 # Class to for pytorch sentiment LSTM NN
 import pandas as pd
 import numpy as np
+import wget
 
-
+from helpers_LSTMsent import Vocabulary
 import torch
 from torch import optim
 from torch import nn
@@ -76,7 +77,36 @@ class LSTMClassifier(nn.Module):
         f_name = "../tweet_training data/train.csv"
         f_name = "/home/lau/GIT/Complex Systems Stock Market/tweet_training data/train.csv"
         test_df = pd.read_csv(f_name,engine='python')
-        test_df.head()
+        
+        url = "https://gist.githubusercontent.com/bastings/4d1c346c68969b95f2c34cfbc00ba0a0/raw/76b4fefc9ef635a79d0d8002522543bc53ca2683/googlenews.word2vec.300d.txt"
+        f = "/home/lau/GIT/Complex Systems Stock Market/tweet_training data/googlenews.word2vec.300d.txt"
+        #wget.download(url, f)
+        f = open(f, 'r')
+        content = f.readlines()
+        # initialize vocabulary end embeddings
+        v2 = Vocabulary()
+        vectors = []
+
+        # add unknown and padding first
+        v2.w2i['<unk>'] = 0
+        v2.w2i['<pad>'] = 1
+        vectors.append(np.zeros(300))
+        vectors.append(np.ones(300))
+
+        counter = 2
+        # store word indeces from trained embeddings in vocabulary : 
+        for line in content:
+            line = line.split()
+            #v2.w2i[line[0]] = [float(s) for s in line[1:]]
+            v2.w2i[line[0]] = counter
+            vectors.append([float(s) for s in line[1:]])
+            counter += 1
+
+        v2.build()
+        vectors = np.stack(vectors, axis = 0)
+        self.vocab = v2
+        self.vocab_size = len(v2.w2i)
+        print(self.vocab_size)
 
 if __name__ == "__main__":
 #(self, vocab_size, embedding_dim, hidden_dim, output_dim, vocab)
