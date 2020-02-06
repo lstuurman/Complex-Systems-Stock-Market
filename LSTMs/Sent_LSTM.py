@@ -16,10 +16,10 @@ class LSTMClassifier(nn.Module):
     def __init__(self, embedding_dim, hidden_dim, output_dim):
         super(LSTMClassifier, self).__init__()
         # vocabulary : 
-        self.vocab,self.vocab_size = self.create_vocab()
+        self.vocab,self.vocab_size,self.vectors = self.create_vocab()
         # NN : 
         self.hidden_dim = hidden_dim
-        self.embed = nn.Embedding(vocab_size, embedding_dim, padding_idx=1)
+        self.embed = nn.Embedding(self.vocab_size, embedding_dim, padding_idx=1)
         self.rnn = nn.LSTM(embedding_dim,hidden_dim)
         #self.rnn = MyLSTMCell(embedding_dim, hidden_dim)
 
@@ -29,12 +29,12 @@ class LSTMClassifier(nn.Module):
             )
 
     def forward(self, x):
-
+        print(x.shape)
         B = x.size(0)  # batch size (this is 1 for now, i.e. 1 single example)
         T = x.size(1)  # time (the number of words in the sentence)
 
         input_ = self.embed(x)
-
+        print(input_.shape)
         # here we create initial hidden states containing zeros
         # we use a trick here so that, if input is on the GPU, then so are hx and cx
         hx = input_.new_zeros(B, self.rnn.hidden_size)
@@ -44,6 +44,7 @@ class LSTMClassifier(nn.Module):
         # input is batch-major, so the first word(s) is/are input_[:, 0]
         outputs = []   
         for i in range(T):
+            print(input_[:,i].shape)
             hx, cx = self.rnn(input_[:, i], (hx, cx))
             outputs.append(hx)
 
@@ -75,7 +76,7 @@ class LSTMClassifier(nn.Module):
     def create_vocab(self):
 
         url = "https://gist.githubusercontent.com/bastings/4d1c346c68969b95f2c34cfbc00ba0a0/raw/76b4fefc9ef635a79d0d8002522543bc53ca2683/googlenews.word2vec.300d.txt"
-        f = "../tweet_training data/googlenews.word2vec.300d.txt"
+        f = "../tweet_training_data/googlenews.word2vec.300d.txt"
         #wget.download(url, f)f = "/home/lau/GIT/Complex Systems Stock Market/tweet_training data/googlenews.word2vec.300d.txt"
         f = open(f, 'r')
         content = f.readlines()
@@ -99,7 +100,7 @@ class LSTMClassifier(nn.Module):
 
         v2.build()
         vectors = np.stack(vectors, axis = 0)
-        return v2,len(v2.w2i)
+        return v2,len(v2.w2i),vectors
     
     def train_tweets(self):
         ### IN PROGRESS ###
@@ -116,25 +117,16 @@ class LSTMClassifier(nn.Module):
             new_text = " ".join(clean)
             break
         
-    def load_stanford(self):
-        f = "../tweet_training data/stanfordsentiment.zip"
-        url = "http://nlp.stanford.edu/sentiment/trainDevTestTrees_PTB.zip"
-        wget.download(url, f)
-        # unzip : 
-        with zipfile.ZipFile(f,"r") as zip_ref:
-            zip_ref.extractall("../tweet_training data/")
 
-    def filereader(path): 
-    with open(path, mode="r", encoding="utf-8") as f:
-        for line in f:
-            yield line.strip().replace("\\","")
-            
-    def train_reviews(self):
-        ### Train classifier on movie reviews ###
-        # get data : 
-        pass
+    
+    # def review_train_data(self):
+
+    # def train_reviews(self):
+    #     ### Train classifier on movie reviews ###
+    #     # get data : 
+    #     pass
         
-
+    
 if __name__ == "__main__":
 #(self, vocab_size, embedding_dim, hidden_dim, output_dim, vocab)
     vocab_size = 18922
