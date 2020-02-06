@@ -2,6 +2,8 @@
 import pandas as pd
 import numpy as np
 import wget
+from nltk.tokenize import TweetTokenizer
+import zipfile
 
 from helpers_LSTMsent import Vocabulary
 import torch
@@ -14,9 +16,7 @@ class LSTMClassifier(nn.Module):
     def __init__(self, embedding_dim, hidden_dim, output_dim):
         super(LSTMClassifier, self).__init__()
         # vocabulary : 
-        self.vocab = None
-        self.vocab_size = None
-
+        self.vocab,self.vocab_size = self.create_vocab()
         # NN : 
         self.hidden_dim = hidden_dim
         self.embed = nn.Embedding(vocab_size, embedding_dim, padding_idx=1)
@@ -73,14 +73,10 @@ class LSTMClassifier(nn.Module):
         return logits
 
     def create_vocab(self):
-        # read trianing data : 
-        f_name = "../tweet_training data/train.csv"
-        f_name = "/home/lau/GIT/Complex Systems Stock Market/tweet_training data/train.csv"
-        test_df = pd.read_csv(f_name,engine='python')
-        
+
         url = "https://gist.githubusercontent.com/bastings/4d1c346c68969b95f2c34cfbc00ba0a0/raw/76b4fefc9ef635a79d0d8002522543bc53ca2683/googlenews.word2vec.300d.txt"
-        f = "/home/lau/GIT/Complex Systems Stock Market/tweet_training data/googlenews.word2vec.300d.txt"
-        #wget.download(url, f)
+        f = "../tweet_training data/googlenews.word2vec.300d.txt"
+        #wget.download(url, f)f = "/home/lau/GIT/Complex Systems Stock Market/tweet_training data/googlenews.word2vec.300d.txt"
         f = open(f, 'r')
         content = f.readlines()
         # initialize vocabulary end embeddings
@@ -97,20 +93,54 @@ class LSTMClassifier(nn.Module):
         # store word indeces from trained embeddings in vocabulary : 
         for line in content:
             line = line.split()
-            #v2.w2i[line[0]] = [float(s) for s in line[1:]]
             v2.w2i[line[0]] = counter
             vectors.append([float(s) for s in line[1:]])
             counter += 1
 
         v2.build()
         vectors = np.stack(vectors, axis = 0)
-        self.vocab = v2
-        self.vocab_size = len(v2.w2i)
-        print(self.vocab_size)
+        return v2,len(v2.w2i)
+    
+    def train_tweets(self):
+        ### IN PROGRESS ###
+        #read trianing data : 
+        f_name = "../tweet_training data/train.csv"
+        #f_name = "/home/lau/GIT/Complex Systems Stock Market/tweet_training data/train.csv"
+        test_df = pd.read_csv(f_name,engine='python')
+
+        ## use tweettokizer to make data little cleaner : 
+        tknzr = TweetTokenizer(strip_handles=True,reduce_len=True)
+        for row,value in test_df.iterrows():
+            text = value['SentimentText']
+            clean = tknzr.tokenize(text)
+            new_text = " ".join(clean)
+            break
+        
+    def load_stanford(self):
+        f = "../tweet_training data/stanfordsentiment.zip"
+        url = "http://nlp.stanford.edu/sentiment/trainDevTestTrees_PTB.zip"
+        wget.download(url, f)
+        # unzip : 
+        with zipfile.ZipFile(f,"r") as zip_ref:
+            zip_ref.extractall("../tweet_training data/")
+
+    def filereader(path): 
+    with open(path, mode="r", encoding="utf-8") as f:
+        for line in f:
+            yield line.strip().replace("\\","")
+            
+    def train_reviews(self):
+        ### Train classifier on movie reviews ###
+        # get data : 
+        pass
+        
 
 if __name__ == "__main__":
 #(self, vocab_size, embedding_dim, hidden_dim, output_dim, vocab)
-    vocab_size = 18000
+    vocab_size = 18922
     output_dim = 2
     model = LSTMClassifier( 300, 168, output_dim)
-    model.create_vocab()
+    model.load_stanford()
+    # model.create_vocab()
+    # print(model.embed)
+    #model.train_tweets()
