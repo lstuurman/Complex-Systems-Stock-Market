@@ -20,13 +20,17 @@ class LSTMClassifier(nn.Module):
         # NN : 
         self.hidden_dim = hidden_dim
         self.embed = nn.Embedding(self.vocab_size, embedding_dim, padding_idx=1)
-        self.rnn = nn.LSTM(embedding_dim,hidden_dim)
-        #self.rnn = MyLSTMCell(embedding_dim, hidden_dim)
+        self.rnn = nn.LSTM(embedding_dim,hidden_dim,dropout=.5)
 
-        self.output_layer = nn.Sequential(     
-            nn.Dropout(p=0.5),  # explained later
-            nn.Linear(hidden_dim, output_dim)
-            )
+        self.output_layer = nn.Linear(hidden_dim,output_dim)
+        #self.rnn = MyLSTMCell(embedding_dim, hidden_dim)
+        
+        ### FIX USING PYTORCH LSTM ###
+
+        # self.output_layer = nn.Sequential(     
+        #     nn.Dropout(p=0.5),  # explained later
+        #     nn.Linear(hidden_dim, output_dim)
+        #     )
 
     def forward(self, x):
         print(x.shape)
