@@ -86,7 +86,7 @@ def prepare_minibatch(mb, vocab):
   
   # vocab returns 0 if the word is not there
   x = [pad([vocab.w2i.get(t, 0) for t in ex.tokens], maxlen) for ex in mb]
-  device = torch.device('cpu')
+  device = torch.device('cuda' if torch.cuda.is_available() else'cpu')
   x = torch.LongTensor(x)
   x = x.to(device)
   
