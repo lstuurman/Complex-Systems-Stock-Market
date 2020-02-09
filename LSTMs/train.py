@@ -135,7 +135,7 @@ if __name__ == "__main__":
     lstm.create_vocab()
     vectors = lstm.vectors
     # try cuda ...
-    device = torch.device('cpu') #'cuda' if torch.cuda.is_available() else 
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu') #'cuda' if torch.cuda.is_available() else 
 
     # copy embeddings into model:
     with torch.no_grad():
