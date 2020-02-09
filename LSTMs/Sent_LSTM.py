@@ -6,6 +6,7 @@ from nltk.tokenize import TweetTokenizer
 import zipfile
 
 from helpers_LSTMsent import Vocabulary
+from LSTM_cell import MyLSTMCell
 import torch
 from torch import optim
 from torch import nn
@@ -20,25 +21,24 @@ class LSTMClassifier(nn.Module):
         # NN : 
         self.hidden_dim = hidden_dim
         self.embed = nn.Embedding(self.vocab_size, embedding_dim, padding_idx=1)
-        self.rnn = nn.LSTM(embedding_dim,hidden_dim,dropout=.5)
+        self.rnn = MyLSTMCell(embedding_dim,hidden_dim)
+        # self.rnn = nn.LSTM(embedding_dim,hidden_dim,dropout=.5)
 
         self.output_layer = nn.Linear(hidden_dim,output_dim)
         #self.rnn = MyLSTMCell(embedding_dim, hidden_dim)
         
         ### FIX USING PYTORCH LSTM ###
 
-        # self.output_layer = nn.Sequential(     
-        #     nn.Dropout(p=0.5),  # explained later
-        #     nn.Linear(hidden_dim, output_dim)
-        #     )
+        self.output_layer = nn.Sequential(     
+            nn.Dropout(p=0.5),  # explained later
+            nn.Linear(hidden_dim, output_dim)
+            )
 
     def forward(self, x):
-        print(x.shape)
         B = x.size(0)  # batch size (this is 1 for now, i.e. 1 single example)
         T = x.size(1)  # time (the number of words in the sentence)
 
         input_ = self.embed(x)
-        print(input_.shape)
         # here we create initial hidden states containing zeros
         # we use a trick here so that, if input is on the GPU, then so are hx and cx
         hx = input_.new_zeros(B, self.rnn.hidden_size)
@@ -48,9 +48,10 @@ class LSTMClassifier(nn.Module):
         # input is batch-major, so the first word(s) is/are input_[:, 0]
         outputs = []   
         for i in range(T):
-            print(input_[:,i].shape)
             hx, cx = self.rnn(input_[:, i], (hx, cx))
             outputs.append(hx)
+        # outputs = self.rnn(input)
+        # print(outputs)
 
         # if we have a single example, our final LSTM state is the last hx
         if B == 1:

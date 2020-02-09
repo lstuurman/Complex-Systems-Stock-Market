@@ -9,7 +9,10 @@ import numpy as np
 import nltk
 import matplotlib.pyplot as plt
 import seaborn as sns
+import math
 sns.set_style('darkgrid')
+import pickle
+import pandas
 
 import torch
 from torch import optim
@@ -147,4 +150,10 @@ if __name__ == "__main__":
     losses,accuracies,best = train_model(lstm,optimizer,
         num_iterations=10000,print_every=250,
         eval_every=250, batch_size=batch_size)
+    
+    # save model:
+    pickle.dump(best,open('best_sentiment_LSTM.pkl','wb'))
+    # save dataframe of training : 
+    df = pandas.DataFrame(list(zip(accuracies,losses)),coumns = ['Accuacy','Loss'])
+    df.to_csv('training_data.csv')
 
