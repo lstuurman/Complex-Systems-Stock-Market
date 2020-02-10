@@ -52,7 +52,7 @@ def train_model(model, optimizer, num_iterations=30000,
       # forward pass
       model.train()
       x, targets = prep_fn(batch, model.vocab)
-      print(torch.cuda.get_device_name(torch.cuda.current_device()))
+      #print(torch.cuda.get_device_name(torch.cuda.current_device()))
       
       logits = model(x)
 
