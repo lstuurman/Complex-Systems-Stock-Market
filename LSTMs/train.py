@@ -150,12 +150,12 @@ if __name__ == "__main__":
 
     # train :::
     losses,accuracies,best = train_model(lstm,optimizer,
-        num_iterations=10000,print_every=250,
-        eval_every=250, batch_size=batch_size)
+        num_iterations=20000,print_every=500,
+        eval_every=500, batch_size=batch_size)
     
     # save model:
     pickle.dump(best,open('best_sentiment_LSTM.pkl','wb'))
     # save dataframe of training : 
-    df = pandas.DataFrame(list(zip(accuracies,losses)),coumns = ['Accuacy','Loss'])
+    df = pandas.DataFrame(list(zip(accuracies,losses)),columns = ['Accuracy','Loss'])
     df.to_csv('training_data.csv')
 
