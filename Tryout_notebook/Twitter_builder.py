@@ -19,7 +19,7 @@ class DBbuilder():
             self.end_date = dt.date(2019,1,1)
             self.date_range = pd.bdate_range(self.begin_date,self.end_date)
             self.dt_list = self.date_range.strftime('%Y-%m-%d').tolist()
-            self.home_folder = '/home/lau/GIT/Complex Systems Stock Market/twitter_data' 
+            self.home_folder = '../twitter_data' 
             self.folder_list = []
             self.limit = 10000
             self.resume_querry = 4
