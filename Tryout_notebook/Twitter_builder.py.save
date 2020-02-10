@@ -22,8 +22,8 @@ class DBbuilder():
             self.home_folder = '../twitter_data' 
             self.folder_list = []
             self.limit = 10000
-            self.resume_querry = 5
-            self.resume_date = 0
+            self.resume_querry = 4
+            self.resume_date = 172
         
     def create_folders(self):
         # create folder of every keyword of different querries
@@ -80,7 +80,7 @@ if __name__ == "__main__":
     builder = DBbuilder()
     #builder.save_class()
     #builder.create_folders()
-    builder.scrape()
+   builder.scrape()
 
     # def save(self):
     #     """save class as self.name.txt"""
