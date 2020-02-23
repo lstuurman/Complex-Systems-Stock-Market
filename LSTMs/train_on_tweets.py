@@ -7,12 +7,11 @@ def prep_tweets():
     ### IN PROGRESS ###
     #read trianing data : 
     f_name1 = "../tweet_training_data/train.csv"
-    #f_name2 = "../tweet_training_data/test.csv"
+    #f_name2 = "../tweet_training_data/test.csv" NO EMOTION :: USELESS
     f_name3 = "../tweet_training_data/judge-1377884607_tweet_product_company.csv"
     tweet_df1 = pd.read_csv(f_name1,engine='python')
     #tweet_df2 = pd.read_csv(f_name2,engine='python')
     tweet_df3 = pd.read_csv(f_name3,engine = 'python')
-    print(tweet_df3.head())
 
     # encoding for pos en negative to 2,4
     tweet_df1.loc[tweet_df1.Sentiment == 0,'Sentiment'] = 2
@@ -32,10 +31,24 @@ def prep_tweets():
     ## use tweettokizer to make data little cleaner : 
     tknzr = TweetTokenizer(strip_handles=True,reduce_len=True)
     result = tweet_df1['SentimentText'].apply(lambda x : " ".join(tknzr.tokenize(x)))
-    result3 = tweet_df3['tweet_text'].apply(lambda x : re.sub(r'[^\x00-\x7F]+',' ',x))
+    result3 = tweet_df3['tweet_text'].apply(lambda x : re.sub('[^\x00-\x7F]+',' ',str(x)))
     result3 = result3.apply(lambda x : " ".join(tknzr.tokenize(x)))
     tweet_df1.SentimentText = result
     tweet_df3.tweet_text = result3
-    print(tweet_df3.head())
+
+    # reorder tweet_df3
+    tweet_df3 = tweet_df3[['tweet_text','EMOTION']]
+    tweet_df1 = tweet_df1[['SentimentText','Sentiment']]
+    tweet_df3.columns = ['SentimentText','Sentiment']
+    final_df = pd.concat([tweet_df1,tweet_df3])
+
+    final_df = final_df.dropna()
+    train,dev,test = final_df.iloc[0:800000],final_df.iloc[800000:900000],final_df.iloc[900000:]
+    # save dataframe as new csv 
+    train.to_csv('../tweet_training_data/tweet_train.csv')
+    dev.to_csv('../tweet_training_data/tweet_dev.csv')
+    test.to_csv('../tweet_training_data/tweet_test.csv')
+    print(final_df.head())
+    print(final_df.info())
 
 prep_tweets()

@@ -4,6 +4,9 @@ from nltk import Tree
 import re
 import random
 import torch
+from nltk.tokenize import TweetTokenizer
+tknzr = TweetTokenizer()
+
 ### VOCABULARY ###
 class OrderedCounter(Counter, OrderedDict):
   """Counter that remembers the order elements are first seen"""
@@ -75,6 +78,31 @@ def get_minibatch(data, batch_size=25, shuffle=True):
   if len(batch) > 0:
     yield batch
 
+def get_minibatch2(data, batch_size=25, shuffle=True):
+  """Return minibatches, optional shuffling
+  data now is a pandas dataframe
+  """
+  # convet pandas df to list of tuples : 
+  data = [(tknzr.tokenize(x[1]),x[0]) for x in data.to_list()]
+
+  if shuffle:
+    print("Shuffling training data")
+    random.shuffle(data)  # shuffle training data each epoch
+  
+  batch = []
+  
+  # yield minibatches
+  for example in data:
+    batch.append(example)
+    
+    if len(batch) == batch_size:
+      yield batch
+      batch = []
+      
+  # in case there is something left
+  if len(batch) > 0:
+    yield batch
+
 def prepare_minibatch(mb, vocab):
   """
   Minibatch is a list of examples.
@@ -91,6 +119,27 @@ def prepare_minibatch(mb, vocab):
   x = x.to(device)
   
   y = [ex.label for ex in mb]
+  y = torch.LongTensor(y)
+  y = y.to(device)
+  
+  return x, y
+
+def prepare_minibatch2(mb, vocab):
+  """
+  Minibatch is a list of examples.
+  This function converts words to IDs and returns
+  torch tensors to be used as input/targets.
+  """
+  batch_size = len(mb)
+  maxlen = max([len(ex[0]) for ex in mb])
+  
+  # vocab returns 0 if the word is not there
+  x = [pad([vocab.w2i.get(t, 0) for t in ex[0]], maxlen) for ex in mb]
+  device = torch.device('cuda' if torch.cuda.is_available() else'cpu')
+  x = torch.LongTensor(x)
+  x = x.to(device)
+  
+  y = [ex[1] for ex in mb]
   y = torch.LongTensor(y)
   y = y.to(device)
   
