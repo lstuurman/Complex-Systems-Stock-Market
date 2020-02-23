@@ -7,7 +7,7 @@ import time
 import math
 import numpy as np
 import nltk
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 import seaborn as sns
 import math
 sns.set_style('darkgrid')
@@ -28,9 +28,9 @@ def train_model(model, optimizer, num_iterations=30000,
                 eval_fn=evaluate,
                 batch_size=25, eval_batch_size=None):
   """Train a model. /home/lau/GIT/Complex Systems Stock Market/tweet_training_data/trees"""  
-  train_data = pd.read('../tweet_training_data/tweet_train.csv')
-  dev_data = pd.read('../tweet_training_data/tweet_dev.csv')
-  test_data = pd.read('../tweet_training_data/tweet_test.csv')
+  train_data = pd.read_csv('../tweet_training_data/tweet_train.csv')
+  dev_data = pd.read_csv('../tweet_training_data/tweet_dev.csv')
+  test_data = pd.read_csv('../tweet_training_data/tweet_test.csv')
   iter_i = 0
   train_loss = 0.
   print_num = 0
@@ -137,7 +137,7 @@ def train_model(model, optimizer, num_iterations=30000,
 if __name__ == "__main__":
     # init model: 
     # load model from pickle : 
-    model = pickle.load('best_sentiment_LSTM.pkl')
+    lstm = pickle.load(open('best_sentiment_LSTM.pkl','rb'))
     # lstm = LSTMClassifier(300,168,5)
     # lstm.create_vocab()
     # vectors = lstm.vectors
