@@ -17,6 +17,7 @@ def prep_tweets():
     tweet_df1.loc[tweet_df1.Sentiment == 0,'Sentiment'] = 2
     tweet_df1.loc[tweet_df1.Sentiment == 1,'Sentiment'] = 4
     tweet_df3.loc[tweet_df3.EMOTION == 'Negative emotion','EMOTION'] = 2
+    tweet_df3.loc[tweet_df3.EMOTION == 'No emotion toward brand or product','EMOTION'] = 3
     tweet_df3.loc[tweet_df3.EMOTION == 'Positive emotion','EMOTION'] = 4
     tweet_df3 = tweet_df3[['tweet_text','EMOTION']]
     # change datatypes of df3
@@ -43,12 +44,15 @@ def prep_tweets():
     final_df = pd.concat([tweet_df1,tweet_df3])
 
     final_df = final_df.dropna()
-    train,dev,test = final_df.iloc[0:800000],final_df.iloc[800000:900000],final_df.iloc[900000:]
+    final_df = final_df[final_df.Sentiment.astype(str).str.isdigit()]
+    final_df['Sentiment'] = final_df['Sentiment'].apply(pd.to_numeric)
+    train,dev,test = final_df.iloc[0:80000],final_df.iloc[80000:90000],final_df.iloc[90000:]
     # save dataframe as new csv 
     train.to_csv('../tweet_training_data/tweet_train.csv')
     dev.to_csv('../tweet_training_data/tweet_dev.csv')
     test.to_csv('../tweet_training_data/tweet_test.csv')
     print(final_df.head())
     print(final_df.info())
+    print(final_df.count())
 
 prep_tweets()
