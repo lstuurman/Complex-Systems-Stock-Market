@@ -1,0 +1,55 @@
+0 2018-10-08 23:59:57 #CRYPTO 24H GAINERS
+
+$MKR +24.56% [$773.74, Vol: 652.31 BTC]
+$CMT +19.84% [$0.14, Vol: 9,121.59 BTC]
+$DCR +10.49% [$44.31, Vol: 258.03 BTC]
+$PPT +9.58% [$3.71, Vol: 554.02 BTC]
+$WTC +7.98% [$3.13, Vol: 975.11 BTC]
+$ONT +6.76% [$2.06, Vol: 7,132.67 BTC]
+1 2018-10-08 23:59:56 #CRYPTO 24H LOSERS
+
+$ZRX -2.12% [$0.72, Vol: 3,087.68 BTC]
+$TRX -1.57% [$0.027, Vol: 45,615.71 BTC]
+$STEEM -1.44% [$0.87, Vol: 213.39 BTC]
+2 2018-10-08 23:59:56 #CRYPTO 24H VOLUME
+
+$ETH +1.78% [$229.66, 221,908.48 BTC]
+$EOS +2.83% [$5.92, 94,465.54 BTC]
+$XRP +1.67% [$0.49, 82,309.01 BTC]
+$BCH +2.05% [$528.11, 59,861.50 BTC]
+$LTC +2.59% [$59.54, 52,414.25 BTC]
+$TRX -1.57% [$0.027, 45,615.71 BTC]
+$NEO +2.57% [$18.53, 24,101.89 BTC]
+3 2018-10-08 23:59:55 #CRYPTO 24H VOLUME
+
+$BTC +0.71% [$6,656.75, $3,991,626,572.79]
+$ETH +1.78% [$229.66, $1,475,083,973.78]
+$EOS +2.83% [$5.92, $627,937,303.03]
+$XRP +1.67% [$0.49, $547,129,618.38]
+$BCH +2.05% [$528.11, $397,915,106.44]
+$LTC +2.59% [$59.54, $348,411,304.89]
+4 2018-10-08 23:59:55 #CRYPTO 60M GAINERS
+
+$CMT +5.42% [$0.14, 0.00002151 BTC]
+5 2018-10-08 23:59:51  is this a bad time to say I've never seen it? 
+6 2018-10-08 23:59:29 I had tried one time to cancel my orders when bitmex had problems(not with websocket) and it worked. With browser I was getting errors and order was still active. Actually bitmex use API in web page too but it seems much slower. Now it was websocket error so API was working fine.
+7 2018-10-08 23:59:22 Blue no questions asked
+8 2018-10-08 23:59:22 We hope you  it!  We put some hard work in every one of them
+9 2018-10-08 23:59:21 @digitalassetbuy  New to crypto currency. I want to invest in XRP. What exchange do you recommend for beginners to puchase? What is the next step? Love and have my big girl pants on so I’m ready for the long haul and need some instruction. Thanks!
+10 2018-10-08 23:59:03 Dividends for holding XRP in Uphold Acct...and fully backed by dollar?
+11 2018-10-08 23:59:03 isn't necessarily there fault, crypto has massive swings so it becomes expected
+12 2018-10-08 23:58:59 Pagi ini dimulai dengan mengawasi dua koin crypto papan tengah yang potensial aku beli--masih menunggu beberapa waktu, semoga posisinya aman.
+13 2018-10-08 23:58:52 I haven't done a podcast...?
+14 2018-10-08 23:58:47 OPP token rate will be fixed for the moment when buyers are agreeing to buy the good. Seller can designate fixed price or floating price, based on exchange.  #crypto #oppopenwifi
+15 2018-10-08 23:58:36 the good thing is, we sit around for ages in crypto waiting. 
+
+In stocks we know exactly what 2 hours we're going to get the momo.
+
+Multi task some day trades, take cash positions each day, and monitor crypto too.
+
+Best of both worlds. 
+
+Cako bako as we say in london.
+16 2018-10-08 23:58:11 @SatoshiFlipper @IDrawCharts @crypto_Tyrion  Hey guys, is there anywhere I can listen to a recording of the podcast you did?
+17 2018-10-08 23:58:08 awwwwwwwww   everything needs to shut down in crypto for 8 hours and all of us need to sleep lollll
+18 2018-10-08 23:57:51 what's the story with $DACC besides being low sat?

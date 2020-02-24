@@ -160,7 +160,7 @@ if __name__ == "__main__":
         eval_every=500, batch_size=batch_size)
     
     # save model:
-    pickle.dump(best,open('best_sentiment_LSTM.pkl','wb'))
+    pickle.dump(best,open('best_sentiment_LSTM2.pkl','wb'))
     # save dataframe of training : 
     df = pandas.DataFrame(list(zip(accuracies,losses)),columns = ['Accuracy','Loss'])
     df.to_csv('training_data2.csv')

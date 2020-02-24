@@ -83,7 +83,7 @@ def get_minibatch2(data, batch_size=25, shuffle=True):
   data now is a pandas dataframe
   """
   # convet pandas df to list of tuples : 
-  data = [(tknzr.tokenize(x[1]),x[0]) for x in data.values.to_list()]
+  data = [(tknzr.tokenize(str(x[1])),x[0]) for x in data.values.tolist()]
 
   if shuffle:
     print("Shuffling training data")
