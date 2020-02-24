@@ -51,8 +51,8 @@ def prep_tweets():
     train.to_csv('../tweet_training_data/tweet_train.csv')
     dev.to_csv('../tweet_training_data/tweet_dev.csv')
     test.to_csv('../tweet_training_data/tweet_test.csv')
-    print(final_df.head())
-    print(final_df.info())
-    print(final_df.count())
+    print(test.info())
+    print(train.info())
+    print(dev.info())
 
 prep_tweets()
