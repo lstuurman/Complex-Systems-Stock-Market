@@ -136,7 +136,7 @@ def train_model(model, optimizer, num_iterations=30000,
 if __name__ == "__main__":
     # init model: 
     # load model from pickle : 
-    lstm = pickle.load(open('best_sentiment_LSTM.pkl','rb'))
+    lstm = pickle.load(open('best_sentiment_LSTM3.pkl','rb'))
     # lstm = LSTMClassifier(300,168,5)
     # lstm.create_vocab()
     # vectors = lstm.vectors
@@ -159,8 +159,8 @@ if __name__ == "__main__":
         eval_every=500, batch_size=batch_size)
     
     # save model:
-    pickle.dump(best,open('best_sentiment_LSTM2.pkl','wb'))
+    pickle.dump(best,open('best_sentiment_LSTM4.pkl','wb'))
     # save dataframe of training : 
     df = pandas.DataFrame(list(zip(accuracies,losses)),columns = ['Accuracy','Loss'])
-    df.to_csv('training_data2.csv')
+    df.to_csv('training_data4.csv')
 
