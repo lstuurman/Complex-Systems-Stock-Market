@@ -47,7 +47,7 @@ def train_model(model, optimizer, num_iterations=30000,
   if eval_batch_size is None:
     eval_batch_size = batch_size
   
-  scheduler = StepLR(optimizer, step_size=5, gamma=0.5)
+  scheduler = StepLR(optimizer, step_size=100, gamma=0.1)
 
   while True:  # when we run out of examples, shuffle and continue
     for batch in batch_fn(train_data, batch_size=batch_size):
@@ -150,8 +150,8 @@ if __name__ == "__main__":
 
     lstm = lstm.to(device)
     batch_size = 25
-    #optimizer = optim.Adam(lstm.parameters(), lr = 2e-4)
-    optimizer = optim.SGD(lstm.parameters(), lr=3e-4, momentum=0.9, nesterov=True)
+    optimizer = optim.Adam(lstm.parameters(), lr = 1e-4)
+    #optimizer = optim.SGD(lstm.parameters(), lr=3e-4, momentum=0.9, nesterov=True)
 
     # train :::
     losses,accuracies,best = train_model(lstm,optimizer,
