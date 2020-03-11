@@ -155,7 +155,7 @@ if __name__ == "__main__":
 
     # train :::
     losses,accuracies,best = train_model(lstm,optimizer,
-        num_iterations=20000,print_every=500,
+        num_iterations=50000,print_every=500,
         eval_every=500, batch_size=batch_size)
     
     # save model:

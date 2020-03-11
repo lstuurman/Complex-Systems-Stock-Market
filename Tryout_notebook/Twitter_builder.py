@@ -15,14 +15,14 @@ class DBbuilder():
         except:
             self.keywords = ['stocks','oil','forex','gold','commodities','crypto','CFD']
             self.help_querry = ' -filter:links' # min_replies:10 trading min_faves:10 
-            self.begin_date = dt.date(2018,1,1)
-            self.end_date = dt.date(2019,1,1)
+            self.begin_date = dt.date(2019,1,1)
+            self.end_date = dt.date(2020,1,1)
             self.date_range = pd.bdate_range(self.begin_date,self.end_date)
             self.dt_list = self.date_range.strftime('%Y-%m-%d').tolist()
             self.home_folder = '../twitter_data' 
             self.folder_list = []
             self.limit = 10000
-            self.resume_querry = 5
+            self.resume_querry = 0
             self.resume_date = 0
         
     def create_folders(self):
