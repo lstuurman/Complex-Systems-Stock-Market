@@ -65,7 +65,7 @@ class  CNN_LSTM_predictor(nn.Module):
         # data is text file containing volume,price for one stock
         data = np.loadtxt(data_file)
         price,volume = data.T
-        device = torch.device('cpu') # if torch.cuda.is_available() else 'cpu')
+        device = torch.device('cpu' if torch.cuda.is_available() else 'cpu')
         # normalize : 
         volume = sk_prep.minmax_scale(volume.reshape((-1,1)),copy = True)
         price = sk_prep.minmax_scale(volume.reshape((-1,1)), copy = True)
@@ -146,8 +146,8 @@ def evaluate(model,datafile):
 def train(model):
     # devide data : 
     files = glob.glob('../stock_data/NASDAQ/*')
-    train = files[:400]
-    test = files[400:450]
+    train = files[:440]
+    test = files[440:450]
     #evl = files[450:]
 
     # some usefull measures
@@ -193,11 +193,12 @@ def train(model):
 
                 # evaluate : 
                 if i % n_evals == 0:
-                    devs,cbull,cbear,fbull,fbear = evaluate(model,test[i/n_evals])
+                    print(i)
+                    devs,cbull,cbear,fbull,fbear = evaluate(model,test[int(i/n_evals)])
                     eval_data.append([devs,cbull,cbear,fbull,fbear])
 
                     if devs < best_eval:
-                        best_eval = devs:
+                        best_eval = devs
                         best_iter = i
                         # save best model:
                         path = 'best_CNN.pt'
@@ -207,7 +208,7 @@ def train(model):
                             "best_eval" : best_eval,
                             "best_iter" : best_iter
                         }
-                        torch.save(params)
+                        torch.save(params,path)
                     
 
 
@@ -219,8 +220,10 @@ def train(model):
 
 
 if __name__ == "__main__":
+    device = torch.device('cpu' if torch.cuda.is_available() else 'cpu')
     model = CNN_LSTM_predictor((50,20),3,50)
-    dfile = '../stock_data/NASDAQ/A'
+    model = model.to(device)
+    #dfile = '../stock_data/NASDAQ/A'
     #model.prepare_minibatch(dfile)
-    evaluate(model,dfile)
-    #train(model)
+    #evaluate(model,dfile)
+    train(model)
