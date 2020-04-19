@@ -187,30 +187,30 @@ def train(model):
                 loss.backward()
                 optimizer.step()
 
-        # print some info :
-        print(dt) 
-        if dt % 2 == 0:
-            print('Training loss : ',train_loss)
-            train_loss = 0.
+            # print some info :
+            print(dt) 
+            if dt % 2 == 0:
+                print('Training loss : ',train_loss)
+                train_loss = 0.
 
-        # evaluate : 
-        if dt % 4 == 0: # n_evals == 0:
-            print(i)
-            devs,cbull,cbear,fbull,fbear = evaluate(model,test) #[int(i/n_evals)])
-            eval_data.append([devs,cbull,cbear,fbull,fbear])
+            # evaluate : 
+            if dt % 4 == 0: # n_evals == 0:
+                print(i)
+                devs,cbull,cbear,fbull,fbear = evaluate(model,test) #[int(i/n_evals)])
+                eval_data.append([devs,cbull,cbear,fbull,fbear])
 
-            if devs < best_eval:
-                best_eval = devs
-                best_iter = i
-                # save best model:
-                path = 'best_CNN.pt'
-                params = {
-                    "state_dict" : model.state_dict(),
-                    "optimizer_state" : optimizer.state_dict(),
-                    "best_eval" : best_eval,
-                    "best_iter" : best_iter
-                }
-                torch.save(params,path)
+                if devs < best_eval:
+                    best_eval = devs
+                    best_iter = i
+                    # save best model:
+                    path = 'best_CNN.pt'
+                    params = {
+                        "state_dict" : model.state_dict(),
+                        "optimizer_state" : optimizer.state_dict(),
+                        "best_eval" : best_eval,
+                        "best_iter" : best_iter
+                    }
+                    torch.save(params,path)
 
     path1 = 'Losses.pkl'
     path2 = 'Accuracies.pkl'
