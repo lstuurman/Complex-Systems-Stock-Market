@@ -3,7 +3,7 @@ from torch import optim
 from torch import nn
 import torch.nn.functional as F
 from torch.optim.lr_scheduler import StepLR
-
+import pickle
 import numpy as np
 import glob
 import sklearn.preprocessing as sk_prep
@@ -65,26 +65,26 @@ class  CNN_LSTM_predictor(nn.Module):
         # data is text file containing volume,price for one stock
         data = np.loadtxt(data_file)
         price,volume = data.T
-        device = torch.device('cpu' if torch.cuda.is_available() else 'cpu')
-        # normalize : 
-        volume = sk_prep.minmax_scale(volume.reshape((-1,1)),copy = True)
-        price = sk_prep.minmax_scale(volume.reshape((-1,1)), copy = True)
+        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        #: 
+        #volume = sk_prep.minmax_scale(volume.reshape((-1,1)),copy = True)
+        #price = sk_prep.minmax_scale(volume.reshape((-1,1)), copy = True)
         
         batches = []
         targets = []
 
         for i in range(len(data) - 21):
-            vol_slice = volume[i:i+20]
-            pr_slice = price[i:i+20]
-            batches.append((pr_slice,vol_slice))
-            targets.append(price[i+20])
+            vol_slice = sk_prep.minmax_scale(volume[i:i+20].reshape(-1,1),copy = True)
+            pr_slice = sk_prep.minmax_scale(price[i:i+21].reshape(-1,1),copy = True)
+            batches.append((pr_slice[:-1],vol_slice))
+            targets.append(pr_slice[-1].reshape(-1))
         
         batches = torch.Tensor(batches).to(device)
         targets = torch.Tensor(targets).to(device)
 
         minibatches = torch.split(batches,50)
         minitargets = torch.split(targets,50)
-
+        
         return minibatches,minitargets
 
 def evaluate(model,datafile):
@@ -107,9 +107,9 @@ def evaluate(model,datafile):
         predictions = model((price,volume))
 
         for y_i,seq in enumerate(batch):
-            seq = seq[0].numpy().flatten()
-            t = target[y_i].numpy()[0]
-            pred = predictions[y_i].detach().numpy()[0]
+            seq = seq[0].cpu().numpy().flatten()
+            t = target[y_i].cpu().numpy()[0]
+            pred = predictions[y_i].cpu().detach().numpy()[0]
             # Relative error
             high = max(seq)
             low = min(seq)
@@ -146,12 +146,12 @@ def evaluate(model,datafile):
 def train(model):
     # devide data : 
     files = glob.glob('../stock_data/NASDAQ/*')
-    train = files[:440]
-    test = files[440:450]
+    train = files[:4] # 440
+    test = files[5]#[440:450]
     #evl = files[450:]
 
     # some usefull measures
-    training_iters = 1000
+    training_iters = 10
     train_loss = 0.
     criterion = nn.MSELoss() # loss function
     optimizer = optim.Adam(model.parameters(), lr = 1e-4)
@@ -164,7 +164,8 @@ def train(model):
     #scheduler = StepLR(optimizer,step_size = 100,gamma = 0.1)
 
     for i in range(training_iters):
-        for t_file in train:
+        for dt,t_file in enumerate(train):
+            print(t_file)
 
             model.train()
             
@@ -172,7 +173,7 @@ def train(model):
 
             for n,batch in enumerate(minibatches):
                 price,volume = volume,price = torch.split(batch,1,dim = 1)
-                target = targets[i]
+                target = targets[n]
 
                 # forward
                 outputs = model((price,volume))
@@ -186,15 +187,16 @@ def train(model):
                 loss.backward()
                 optimizer.step()
 
-        # print some info : 
-        if i % 20 == 0:
+        # print some info :
+        print(dt) 
+        if dt % 2 == 0:
             print('Training loss : ',train_loss)
             train_loss = 0.
 
         # evaluate : 
-        if i % n_evals == 0:
+        if dt % 4 == 0: # n_evals == 0:
             print(i)
-            devs,cbull,cbear,fbull,fbear = evaluate(model,test[int(i/n_evals)])
+            devs,cbull,cbear,fbull,fbear = evaluate(model,test) #[int(i/n_evals)])
             eval_data.append([devs,cbull,cbear,fbull,fbear])
 
             if devs < best_eval:
@@ -209,7 +211,11 @@ def train(model):
                     "best_iter" : best_iter
                 }
                 torch.save(params,path)
-                    
+
+    path1 = 'Losses.pkl'
+    path2 = 'Accuracies.pkl'
+    pickle.dump(losses,open(path1,'wb'))
+    pickle.dump(eval_data,open(path2,'wb'))
 
 
                 
@@ -220,7 +226,8 @@ def train(model):
 
 
 if __name__ == "__main__":
-    device = torch.device('cpu' if torch.cuda.is_available() else 'cpu')
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    print(device)
     model = CNN_LSTM_predictor((50,20),3,50)
     model = model.to(device)
     #dfile = '../stock_data/NASDAQ/A'
