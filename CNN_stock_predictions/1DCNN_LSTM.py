@@ -153,7 +153,7 @@ def train(model):
     #evl = files[450:]
 
     # some usefull measures
-    training_iters = 1000
+    training_iters = 100
     train_loss = 0.
     criterion = nn.MSELoss() # loss function
     optimizer = optim.Adam(model.parameters(), lr = 1e-3)
@@ -207,7 +207,7 @@ def train(model):
                     best_eval = devs
                     best_iter = i
                     # save best model:
-                    path = 'best_CNN.pt'
+                    path = 'best_CNN20_10.pt'
                     params = {
                         "state_dict" : model.state_dict(),
                         "optimizer_state" : optimizer.state_dict(),
@@ -216,8 +216,8 @@ def train(model):
                     }
                     torch.save(params,path)
 
-    path1 = 'Losses.pkl'
-    path2 = 'Accuracies.pkl'
+    path1 = 'Losses20_10.pkl'
+    path2 = 'Accuracies20_10.pkl'
     pickle.dump(losses,open(path1,'wb'))
     pickle.dump(eval_data,open(path2,'wb'))
 
@@ -232,7 +232,7 @@ def train(model):
 if __name__ == "__main__":
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     print(device)
-    model = CNN_LSTM_predictor((50,20),3,50)
+    model = CNN_LSTM_predictor((50,20),10,50)
     model = model.to(device)
     #dfile = '../stock_data/NASDAQ/A'
     #model.prepare_minibatch(dfile)
