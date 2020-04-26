@@ -7,6 +7,7 @@ import pickle
 import numpy as np
 import glob
 import sklearn.preprocessing as sk_prep
+from random import shuffle
 
 class  CNN_LSTM_predictor(nn.Module):
     def __init__(self,inshape,kernelsize,hiddensize):
@@ -138,6 +139,7 @@ def evaluate(model,datafile):
     print('Average percentage error :',np.average(deviations))        
     print('Correct Bulls : ',corr_bulls, ' | Correct Bears :',corr_bears)
     print('False   Bulls : ',false_bulls, ' | False   Bears : ',false_bears)
+    print('Total Correct : ', (corr_bulls + corr_bears)/count)
 
     return np.average(deviations), corr_bulls,corr_bears,false_bulls,false_bears
 
@@ -146,15 +148,15 @@ def evaluate(model,datafile):
 def train(model):
     # devide data : 
     files = glob.glob('../stock_data/NASDAQ/*')
-    train = files[:4] # 440
-    test = files[5]#[440:450]
+    train = files[:440] # 440
+    test = files[440:450]
     #evl = files[450:]
 
     # some usefull measures
-    training_iters = 10
+    training_iters = 1000
     train_loss = 0.
     criterion = nn.MSELoss() # loss function
-    optimizer = optim.Adam(model.parameters(), lr = 1e-4)
+    optimizer = optim.Adam(model.parameters(), lr = 1e-3)
     best_eval = 1000.
     best_iter = 0
     n_evals = training_iters/50
@@ -164,8 +166,10 @@ def train(model):
     #scheduler = StepLR(optimizer,step_size = 100,gamma = 0.1)
 
     for i in range(training_iters):
+        print('Shuffling training data')
+        shuffle(train)
         for dt,t_file in enumerate(train):
-            print(t_file)
+            #print(t_file)
 
             model.train()
             
@@ -180,7 +184,7 @@ def train(model):
 
                 loss = criterion(outputs,target)
                 train_loss += loss.item()
-                losses.append(train_loss)
+                losses.append(loss.item())
 
                 # backward : 
                 model.zero_grad()
@@ -188,15 +192,15 @@ def train(model):
                 optimizer.step()
 
             # print some info :
-            print(dt) 
-            if dt % 2 == 0:
+            #print(dt) 
+            if dt % 10 == 0:
                 print('Training loss : ',train_loss)
                 train_loss = 0.
 
             # evaluate : 
-            if dt % 4 == 0: # n_evals == 0:
-                print(i)
-                devs,cbull,cbear,fbull,fbear = evaluate(model,test) #[int(i/n_evals)])
+            if dt % 100 == 0:
+                print('Epoch : ' , i)
+                devs,cbull,cbear,fbull,fbear = evaluate(model,test[int(i/n_evals)])
                 eval_data.append([devs,cbull,cbear,fbull,fbear])
 
                 if devs < best_eval:

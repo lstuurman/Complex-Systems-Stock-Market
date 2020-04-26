@@ -11,21 +11,22 @@ import sklearn.preprocessing as sk_prep
 from train_eval import *
 
 class  CNN_LSTM_predictor(nn.Module):
-    def __init__(self,inshape,nfilters,kernelsize,hiddensize):
+    def __init__(self,inshape,nfilters,kernelsize,lstmsize,hiddensize):
         super(CNN_LSTM_predictor,self).__init__()
 
         # shape parameters: 
         self.batch_size, self.seq = inshape
         self.n_filters = nfilters
-        self.lstm_input = seq_len = 20 - kernelsize + 1
-        
+        self.lstm_input = conf_len = self.seq - kernelsize + 1
+        self.lstm_output = lstmsize
         # layers
         self.cnnPrice = nn.Conv1d(1,self.n_filters,kernelsize)
         self.cnnVolume = nn.Conv1d(1,self.n_filters,kernelsize)
-        self.lstmPrice = nn.LSTM(self.lstm_input,self.lstm_input)
-        self.lstmVolume = nn.LSTM(self.lstm_input,self.lstm_input)
-        bilin_size = seq_len * self.n_filters
-        self.Bilin = nn.Bilinear(bilin_size,bilin_size,36)
+        self.lstmPrice = nn.LSTM(conf_len,lstmsize)
+        self.lstmVolume = nn.LSTM(conf_len,lstmsize)
+        print(conf_len,lstmsize,nfilters)
+        bilin_size = nfilters * conf_len
+        self.Bilin = nn.Bilinear(bilin_size,bilin_size,hiddensize)
         self.output_layer = nn.Sequential(     
             nn.Dropout(p=0.5),  # explained later
             nn.Linear(hiddensize, 1)
@@ -35,10 +36,11 @@ class  CNN_LSTM_predictor(nn.Module):
 
     def forward(self,input):
         price,volume = input
-        price = price.view(-1,1,20)
-        volume = volume.view(-1,1,20)
+        price = price.view(-1,1,self.seq)
+        volume = volume.view(-1,1,self.seq)
         # keep track of batch size --> is smaller for last batch
         b_size = price.size()[0]
+        print(b_size)
 
         ### Price : 
         # convolution 1
@@ -57,7 +59,7 @@ class  CNN_LSTM_predictor(nn.Module):
         # flatten channels : 
         lstm_output_Price = lstm_output_Price.view(b_size,-1)
         lstm_output_Volume = lstm_output_Volume.view(b_size,-1)
-
+        print(lstm_output_Price.size())
         output = self.Bilin(lstm_output_Price,lstm_output_Volume)
 
         output = self.output_layer(output)
@@ -99,9 +101,9 @@ class  CNN_LSTM_predictor(nn.Module):
 if __name__ == "__main__":
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     print(device)
-    model = CNN_LSTM_predictor((50,50),20,3,50)
+    model = CNN_LSTM_predictor((50,50),20,3,20,36)
     model = model.to(device)
     #dfile = '../stock_data/NASDAQ/A'
     #model.prepare_minibatch(dfile)
     #evaluate(model,dfile)
-    train(model)
+    train(model,'Losses50.pkl','ACC50.pkl')

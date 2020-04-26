@@ -1,4 +1,11 @@
-
+import pickle
+import numpy as np
+import glob
+import torch
+from torch import optim
+from torch import nn
+import sklearn.preprocessing as sk_prep
+import torch.nn.functional as F
 
 def evaluate(model,datafile):
     # stats to compute : 
