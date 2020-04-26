@@ -101,7 +101,7 @@ class  CNN_LSTM_predictor(nn.Module):
 if __name__ == "__main__":
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     print(device)
-    model = CNN_LSTM_predictor((50,50),20,3,20,36)
+    model = CNN_LSTM_predictor((50,50),20,3,36)
     model = model.to(device)
     #dfile = '../stock_data/NASDAQ/A'
     #model.prepare_minibatch(dfile)
