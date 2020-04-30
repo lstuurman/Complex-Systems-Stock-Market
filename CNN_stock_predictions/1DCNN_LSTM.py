@@ -164,6 +164,9 @@ def train(model):
     eval_data = []
 
     #scheduler = StepLR(optimizer,step_size = 100,gamma = 0.1)
+    # files to write
+    los_file = open('Losses20_10.txt',"a")
+    acc_file = open('Accuracies20_1.txt',"a")
 
     for i in range(training_iters):
         print('Shuffling training data')
@@ -195,14 +198,18 @@ def train(model):
             #print(dt) 
             if dt % 10 == 0:
                 print('Training loss : ',train_loss)
+                los_file.write(str(train_loss))
+                los_file.write(str('/n'))
                 train_loss = 0.
 
             # evaluate : 
             if dt % 100 == 0:
                 print('Epoch : ' , i)
                 devs,cbull,cbear,fbull,fbear = evaluate(model,test[int(i/n_evals)])
+                ev_data = [devs,cbull,cbear,fbull,fbear]
                 eval_data.append([devs,cbull,cbear,fbull,fbear])
-
+                acc_file.write('/t'.join([str(x) for x in ev_data]))
+                acc_file.write('/n')
                 if devs < best_eval:
                     best_eval = devs
                     best_iter = i
@@ -215,7 +222,8 @@ def train(model):
                         "best_iter" : best_iter
                     }
                     torch.save(params,path)
-
+    acc_file.close()
+    los_file.close()
     path1 = 'Losses20_10.pkl'
     path2 = 'Accuracies20_10.pkl'
     pickle.dump(losses,open(path1,'wb'))
