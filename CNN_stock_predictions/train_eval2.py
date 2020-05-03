@@ -6,6 +6,7 @@ from torch import optim
 from torch import nn
 import sklearn.preprocessing as sk_prep
 import torch.nn.functional as F
+from itertools import shuffle
 
 def evaluate(model,datafile):
     # stats to compute : 
@@ -87,6 +88,8 @@ def train(model,loss_path,acc_path):
 
     for i in range(training_iters):
         for dt,t_file in enumerate(train):
+            print('Shuffling training data')
+            shuffle(train)
             print(t_file)
 
             model.train()
@@ -114,7 +117,7 @@ def train(model,loss_path,acc_path):
             if dt % 2 == 0:
                 print('Training loss : ',train_loss)
                 los_file.write(str(train_loss))
-                los_file.write(str('/n'))
+                los_file.write(str('//n'))
                 train_loss = 0.
 
             # evaluate : 
@@ -123,8 +126,8 @@ def train(model,loss_path,acc_path):
                 devs,cbull,cbear,fbull,fbear = evaluate(model,test) #[int(i/n_evals)])
                 ev_data = [devs,cbull,cbear,fbull,fbear]
                 eval_data.append([devs,cbull,cbear,fbull,fbear])
-                acc_file.write('/t'.join([str(x) for x in ev_data]))
-                acc_file.write('/n')
+                acc_file.write('//t'.join([str(x) for x in ev_data]))
+                acc_file.write('//n')
 
                 if devs < best_eval:
                     best_eval = devs
