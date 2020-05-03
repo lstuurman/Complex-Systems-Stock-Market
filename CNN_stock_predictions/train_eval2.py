@@ -82,6 +82,8 @@ def train(model,loss_path,acc_path):
     eval_data = []
 
     #scheduler = StepLR(optimizer,step_size = 100,gamma = 0.1)
+    los_file = open(loss_path,"a")
+    acc_file = open(acc_path,"a")
 
     for i in range(training_iters):
         for dt,t_file in enumerate(train):
@@ -111,13 +113,18 @@ def train(model,loss_path,acc_path):
             print(dt) 
             if dt % 2 == 0:
                 print('Training loss : ',train_loss)
+                los_file.write(str(train_loss))
+                los_file.write(str('/n'))
                 train_loss = 0.
 
             # evaluate : 
             if dt % 4 == 0: # n_evals == 0:
                 print(i)
                 devs,cbull,cbear,fbull,fbear = evaluate(model,test) #[int(i/n_evals)])
+                ev_data = [devs,cbull,cbear,fbull,fbear]
                 eval_data.append([devs,cbull,cbear,fbull,fbear])
+                acc_file.write('/t'.join([str(x) for x in ev_data]))
+                acc_file.write('/n')
 
                 if devs < best_eval:
                     best_eval = devs
@@ -132,5 +139,5 @@ def train(model,loss_path,acc_path):
                     }
                     torch.save(params,path)
 
-    pickle.dump(losses,open(loss_path,'wb'))
-    pickle.dump(eval_data,open(acc_path,'wb'))
+    acc_file.close()
+    los_file.close()
