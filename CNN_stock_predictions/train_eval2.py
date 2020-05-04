@@ -83,8 +83,8 @@ def train(model,loss_path,acc_path):
     eval_data = []
 
     #scheduler = StepLR(optimizer,step_size = 100,gamma = 0.1)
-    los_file = open(loss_path,"a")
-    acc_file = open(acc_path,"a")
+    los_file = open(loss_path,"w")
+    acc_file = open(acc_path,"w")
 
     for i in range(training_iters):
         for dt,t_file in enumerate(train):
