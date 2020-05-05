@@ -41,9 +41,10 @@ class  simple_CNN(nn.Module):
 
     def prepare_minibatch(self,data_file):
         # data is text file containing volume,price for one stock
+        #print(data_file)
         data = np.loadtxt(data_file)
         price,volume = data.T
-        device = torch.device('cpu' if torch.cuda.is_available() else 'cpu')
+        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
         inseq = self.seq
         seq = self.seq + 1
@@ -75,9 +76,10 @@ class  simple_CNN(nn.Module):
 
 
 if __name__ == "__main__":
-    device = torch.device('cpu' if torch.cuda.is_available() else 'cpu')
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     print(device)
     model = simple_CNN((50,50),50)
+    model.to(device)
     # batches,targets = model.prepare_minibatch('../stock_data/NASDAQ/A')
     # model(batches[0])
     train(model,'Smpl_CNN_loss.txt','Smpl_CNN_acc.txt')
