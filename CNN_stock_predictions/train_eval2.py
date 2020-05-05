@@ -60,7 +60,7 @@ def evaluate(model,datafile):
     print('Correct Bulls : ',corr_bulls, ' | Correct Bears :',corr_bears)
     print('False   Bulls : ',false_bulls, ' | False   Bears : ',false_bears)
     print('Total Correct : ', (corr_bulls + corr_bears)/count)
-    return np.average(deviations), corr_bulls,corr_bears,false_bulls,false_bears,(corr_bulls + corr_bears)/count)
+    return np.average(deviations), corr_bulls,corr_bears,false_bulls,false_bears,(corr_bulls + corr_bears)/count
 
 
 
@@ -124,7 +124,7 @@ def train(model,loss_path,acc_path):
             # evaluate : 
             if dt % 100 == 0:
                 print('Epoch : ',i)
-                devs,cbull,cbear,fbull,fbear = evaluate(model,test[int(i/n_evals)])
+                devs,cbull,cbear,fbull,fbear,corr = evaluate(model,test[int(i/n_evals)])
                 ev_data = [devs,cbull,cbear,fbull,fbear,corr]
                 eval_data.append([devs,cbull,cbear,fbull,fbear,corr])
                 acc_file.write('\t'.join([str(x) for x in ev_data]))
