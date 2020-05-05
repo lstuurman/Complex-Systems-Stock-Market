@@ -133,7 +133,7 @@ def train(model,loss_path,acc_path):
                     best_eval = devs
                     best_iter = i
                     # save best model:
-                    path = 'best_CNN.pt'
+                    path = 'best__simple_CNN2.pt'
                     params = {
                         "state_dict" : model.state_dict(),
                         "optimizer_state" : optimizer.state_dict(),
