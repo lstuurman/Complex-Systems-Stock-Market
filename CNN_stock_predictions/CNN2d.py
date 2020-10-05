@@ -21,9 +21,15 @@ class CNN2D(nn.Module):
 
     def forward(self,x): 
         x1,x2 = x
-        t = torch.cat((x1.view(50,1,50,1),x2.view(50,1,50,1)),3)
+        b_size = x1.size(0)
+        #print(b_size)
+        #print(x1.size(),x2.size())
+        t = torch.cat((x1.view(b_size,1,50,1),x2.view(b_size,1,50,1)),3)
+        t.transpose_(2,3)
         t = F.relu(self.cnn1(t.double()))
         t.squeeze_(2)
+        t = t.view(b_size,-1)
+        #print(t.size())
         return self.linear(t.float())
 
     def prepare_minibatch(self,data_file):
@@ -35,9 +41,9 @@ class CNN2D(nn.Module):
         batches = []
         targets = []
 
-        for i in range(len(data) - 21):
-            vol_slice = sk_prep.minmax_scale(volume[i:i+20].reshape(-1,1),copy = True)
-            pr_slice = sk_prep.minmax_scale(price[i:i+21].reshape(-1,1),copy = True)
+        for i in range(len(data) - 51):
+            vol_slice = sk_prep.minmax_scale(volume[i:i+50].reshape(-1,1),copy = True)
+            pr_slice = sk_prep.minmax_scale(price[i:i+51].reshape(-1,1),copy = True)
             batches.append((pr_slice[:-1],vol_slice))
             targets.append(pr_slice[-1].reshape(-1))
         
@@ -58,4 +64,4 @@ if __name__ == "__main__":
     #dfile = '../stock_data/NASDAQ/A'
     #model.prepare_minibatch(dfile)
     #evaluate(model,dfile)
-    train(model)
+    train(model, '2DCNN_loss.txt','2DCNN_acc.txt')
