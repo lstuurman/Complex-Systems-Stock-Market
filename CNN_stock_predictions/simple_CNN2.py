@@ -5,6 +5,7 @@ import torch.nn.functional as F
 from torch.optim.lr_scheduler import StepLR
 import pickle
 import numpy as np
+import pandas as pd
 import glob
 import sklearn.preprocessing as sk_prep
 from random import shuffle
@@ -31,7 +32,7 @@ class  simple_CNN(nn.Module):
 
     def forward(self,x):
         #print('input shape : ',x.size())
-        x = F.relu(self.cnn1(x.view(-1,1,100)))
+        x = F.relu(self.cnn1(x.view(-1,1,100))) #(-1,1,100)
         x = self.mp1(x)
         x = F.relu(self.cnn2(x))
         x = self.mp2(x)
@@ -43,8 +44,11 @@ class  simple_CNN(nn.Module):
 
     def prepare_minibatch(self,data_file):
         # data is text file containing volume,price for one stock
-        data = np.loadtxt(data_file)
-        price,volume = data.T
+        # data = np.loadtxt(data_file)
+        # price,volume = data.T
+
+        data = pd.read_csv(data_file,index_col = 0)
+        price,volume = data.to_numpy().T
         device = torch.device('cpu' if torch.cuda.is_available() else 'cpu')
 
         inseq = self.seq

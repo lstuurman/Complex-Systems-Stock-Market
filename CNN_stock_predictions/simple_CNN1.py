@@ -42,7 +42,11 @@ class  simple_CNN(nn.Module):
     def prepare_minibatch(self,data_file):
         # data is text file containing volume,price for one stock
         #print(data_file)
-        data = np.loadtxt(data_file)
+        # data = np.loadtxt(data_file) OLD DATA FORMAT
+        # price,volume = data.T
+        # NEW DATA FORMAT 09-10
+        data = pd.read_csv(data_file,index_col = 0)
+        data = data.to_numpy()
         price,volume = data.T
         device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
